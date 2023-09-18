@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--    Header-->
+    <string name="title.goodMorning">Dzień dobry</string>
+    <string name="title.goodAfternoon">Dzień dobry</string>
+    <string name="title.goodEvening" >Dobry wieczór</string>
+</resources>

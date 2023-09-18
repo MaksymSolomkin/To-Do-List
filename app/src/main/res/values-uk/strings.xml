@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--    Header-->
+    <string name="title.goodMorning">Доброго ранку</string>
+    <string name="title.goodAfternoon">Доброго дня</string>
+    <string name="title.goodEvening" >Доброго вечора</string>
+</resources>

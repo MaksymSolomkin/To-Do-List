@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">To-Do List</string>
+    <string name="app_name" translatable="false">To-Do List</string>
+    <string name="wave_hand" translatable="false">&amp;#128075</string>
+
+    <!--    Header-->
+    <string name="title.goodMorning">Good morning</string>
+    <string name="title.goodAfternoon">Good afternoon</string>
+    <string name="title.goodEvening" >Good evening</string>
 </resources>
