@@ -4,4 +4,5 @@
     <string name="title.goodMorning">Доброго ранку</string>
     <string name="title.goodAfternoon">Доброго дня</string>
     <string name="title.goodEvening" >Доброго вечора</string>
+    <string name="title.hello" >Вітаю!</string>
 </resources>

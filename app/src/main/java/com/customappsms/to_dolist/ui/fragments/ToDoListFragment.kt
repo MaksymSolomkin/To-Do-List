@@ -10,6 +10,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.customappsms.to_dolist.R
 import com.customappsms.to_dolist.databinding.FragmentTodoListBinding
+import com.customappsms.to_dolist.ui.adapters.ToDoListAdapter
+import com.customappsms.to_dolist.utils.UIState
+import com.customappsms.to_dolist.utils.hide
+import com.customappsms.to_dolist.utils.show
+import com.customappsms.to_dolist.utils.toast
 import com.customappsms.to_dolist.viewmodel.TaskViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDateTime
@@ -19,6 +24,19 @@ class ToDoListFragment : Fragment() {
 
     private lateinit var binding: FragmentTodoListBinding
     private val viewModel: TaskViewModel by viewModels()
+    private val adapter by lazy {
+        ToDoListAdapter(
+            onItemClicked = { pos, item ->
+
+            },
+            onDeleteClicked = { pos, item ->
+
+            },
+            onCheckBoxClicked = { pos, item ->
+
+            }
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,12 +47,36 @@ class ToDoListFragment : Fragment() {
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        viewModel.getTasks()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getTasks()
-        viewModel.task.observe(viewLifecycleOwner) {
-            // Handle the observed task here
+        binding.recyclerView.adapter = adapter
+
+        binding.addNoteImageView.setOnClickListener {
+            val bottomSheet = TaskDetailsBottomSheetFragment()
+            bottomSheet.show(childFragmentManager, bottomSheet.tag)
+        }
+
+        viewModel.tasks.observe(viewLifecycleOwner) { state ->
+            when(state) {
+                is UIState.Loading -> {
+                    binding.progressBar.show()
+                }
+                is UIState.Failure -> {
+                    binding.progressBar.hide()
+                    toast(state.error)
+                }
+                is UIState.Success -> {
+                    binding.progressBar.hide()
+                    adapter.updateList(state.data.toMutableList())
+                }
+            }
         }
 
         updateView()

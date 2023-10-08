@@ -1,6 +1,8 @@
 package com.customappsms.to_dolist.di
 
+import com.customappsms.to_dolist.data.AuthRepository
 import com.customappsms.to_dolist.data.TaskRepository
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
@@ -15,8 +17,17 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideTaskRepository(
-        database: FirebaseFirestore
+        database: FirebaseFirestore,
+        firebaseAuth: FirebaseAuth,
     ): TaskRepository {
-        return TaskRepository(database)
+        return TaskRepository(database, firebaseAuth)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuthRepository(
+        firebaseAuth: FirebaseAuth
+    ): AuthRepository {
+        return AuthRepository(firebaseAuth)
     }
 }

@@ -7,7 +7,7 @@
         <item name="colorSecondary">@color/grey_7E</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" >?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor" >@color/grey_7E</item>
     </style>
 
     <style name="Theme.ToDoList" parent="Base.Theme.ToDoList" />
