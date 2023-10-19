@@ -1,5 +1,7 @@
 package com.customappsms.to_dolist.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.customappsms.to_dolist.data.AuthRepository
 import com.customappsms.to_dolist.utils.UIState
@@ -13,8 +15,8 @@ class AuthViewModel @Inject constructor(
     private val repository: AuthRepository
 ) : ViewModel() {
 
-    private val _loginFlow = MutableStateFlow<UIState<FirebaseUser>?>(null)
-    val loginFlow: MutableStateFlow<UIState<FirebaseUser>?>
+    private val _loginFlow = MutableLiveData<UIState<FirebaseUser>?>(null)
+    val loginFlow: LiveData<UIState<FirebaseUser>?>
         get() = _loginFlow
 
     init {
@@ -24,6 +26,7 @@ class AuthViewModel @Inject constructor(
     }
 
     fun anonymousLogin() {
+        _loginFlow.value = UIState.Loading
         repository.login {
             _loginFlow.value = it
         }

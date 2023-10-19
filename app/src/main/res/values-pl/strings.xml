@@ -5,4 +5,7 @@
     <string name="title.goodAfternoon">Dzień dobry</string>
     <string name="title.goodEvening" >Dobry wieczór</string>
     <string name="title.hello" >Witaj!</string>
+
+    <!--    Hints-->
+    <string name="hint.writeYourTask">Napisz swoje zadanie</string>
 </resources>
