@@ -1,66 +1,74 @@
 package com.customappsms.to_dolist.ui.adapters
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.customappsms.to_dolist.databinding.ItemTaskLayoutBinding
 import com.customappsms.to_dolist.models.Task
-import com.customappsms.to_dolist.utils.hide
-import com.customappsms.to_dolist.utils.show
 
 class ToDoListAdapter(
-    val onItemClicked: (Int, Task) -> Unit,
-    val onCheckBoxClicked: (Int, Task) -> Unit,
-    val onDeleteClicked: (Int, Task) -> Unit,
-) : RecyclerView.Adapter<ToDoListAdapter.ToDoListViewHolder>() {
-
-    private var list: MutableList<Task> = arrayListOf()
+    private val onDeleteClicked: (Int, Task) -> Unit,
+    private val onItemClicked: (Int, Task) -> Unit,
+    private val onCheckBoxClicked: (Int, Task) -> Unit
+) : ListAdapter<Task, ToDoListAdapter.ToDoListViewHolder>(TaskDiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ToDoListViewHolder {
-        val itemView = ItemTaskLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ToDoListViewHolder(itemView)
-    }
-
-    override fun getItemCount(): Int {
-        return list.size
+        val binding = ItemTaskLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ToDoListViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ToDoListViewHolder, position: Int) {
-        val item = list[position]
+        val item = getItem(position)
         holder.bind(item)
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    fun updateList(list: MutableList<Task>) {
-        this.list = list
-        notifyDataSetChanged()
-    }
-
-    fun removeItem(position: Int) {
-        list.removeAt(position)
-        notifyItemChanged(position)
-    }
-
     inner class ToDoListViewHolder(private val binding: ItemTaskLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
+        init {
+            binding.deleteImageView.setOnClickListener {
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    onDeleteClicked.invoke(adapterPosition, getItem(adapterPosition))
+                }
+            }
+
+            binding.itemLayout.setOnClickListener {
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    onItemClicked.invoke(adapterPosition, getItem(adapterPosition))
+                }
+            }
+
+            binding.checkbox.setOnCheckedChangeListener { _, isSelected ->
+                updateCompletedView(isSelected)
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    onCheckBoxClicked.invoke(adapterPosition, getItem(adapterPosition))
+                }
+            }
+        }
+
         fun bind(item: Task) {
             binding.titleTextView.text = item.title
             binding.checkbox.isSelected = item.isCompleted
-
-            binding.deleteImageView.setOnClickListener { onDeleteClicked.invoke(adapterPosition, item) }
-            binding.itemLayout.setOnClickListener { onItemClicked.invoke(adapterPosition, item) }
-            binding.checkbox.setOnCheckedChangeListener { _, isSelected ->
-                updateCompletedView(isSelected)
-                onCheckBoxClicked(adapterPosition, item)
-            }
+            updateCompletedView(item.isCompleted)
         }
 
         private fun updateCompletedView(isSelected: Boolean) {
-            if (isSelected) {
-                binding.crossLineView.show()
+            binding.crossLineView.visibility = if (isSelected) {
+                View.VISIBLE
             } else {
-                binding.crossLineView.hide()
+                View.GONE
             }
         }
+    }
+}
+
+object TaskDiffCallback : DiffUtil.ItemCallback<Task>() {
+    override fun areItemsTheSame(oldItem: Task, newItem: Task): Boolean {
+        return oldItem.id == newItem.id
+    }
+
+    override fun areContentsTheSame(oldItem: Task, newItem: Task): Boolean {
+        return oldItem == newItem
     }
 }

@@ -74,7 +74,7 @@ class ToDoListFragment : Fragment() {
                 }
                 is UIState.Success -> {
                     binding.progressBar.hide()
-                    adapter.updateList(state.data.toMutableList())
+                    adapter.submitList(state.data)
                 }
             }
         }
@@ -87,8 +87,8 @@ class ToDoListFragment : Fragment() {
         val hour = LocalDateTime.now().hour
 
         val title = when (true) {
-            (hour in 0..12) -> getString(R.string.title_goodMorning)
-            (hour in 12..17) -> getString(R.string.title_goodAfternoon)
+            (hour in 0..11) -> getString(R.string.title_goodMorning)
+            (hour in 12..16) -> getString(R.string.title_goodAfternoon)
             else -> getString(R.string.title_goodEvening)
         }
 

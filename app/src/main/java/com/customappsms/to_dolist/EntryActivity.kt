@@ -44,10 +44,4 @@ class EntryActivity : AppCompatActivity() {
             }
         }
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        viewModel.loginFlow.removeObservers(this)
-    }
 }
