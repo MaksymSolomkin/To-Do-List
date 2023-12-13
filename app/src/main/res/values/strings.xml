@@ -10,4 +10,11 @@
 
     <!--    Hints-->
     <string name="hint.writeYourTask" >Write your task</string>
+
+    <!--    Messages-->
+    <string name="message.taskCanNotBeEmpty" >Task can not be empty</string>
+    <string name="message.taskWasSuccessfullyAdded" >Task was successfully added</string>
+    <string name="message.taskWasSuccessfullyDeleted" >Task was successfully deleted</string>
+    <string name="message.taskWasSuccessfullyUpdated" >Task was successfully updated</string>
+    <string name="message.somethingWentWrong" >Sorry, something went wrong</string>
 </resources>

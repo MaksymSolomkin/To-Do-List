@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import com.customappsms.to_dolist.data.TaskRepository
 import com.customappsms.to_dolist.models.Task
 import com.customappsms.to_dolist.utils.UIState
-import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -19,12 +18,13 @@ class TaskViewModel @Inject constructor(
     val tasks: LiveData<UIState<List<Task>>>
         get() = _tasks
 
-    private val _addTask = MutableLiveData<UIState<String>>()
-    val addTask: LiveData<UIState<String>>
-        get() = _addTask
+    private val _updateTask = MutableLiveData<UIState<Int>>()
+    val updateTask: LiveData<UIState<Int>>
+        get() = _updateTask
 
-    val currentUser: FirebaseUser?
-        get() = repository.currentUser
+    private val _deleteTask = MutableLiveData<UIState<Int>>()
+    val deleteTask: LiveData<UIState<Int>>
+        get() = _deleteTask
 
     fun getTasks() {
         _tasks.value = UIState.Loading
@@ -33,10 +33,17 @@ class TaskViewModel @Inject constructor(
         }
     }
 
-    fun addTask(task: Task) {
-        _addTask.value = UIState.Loading
-        repository.addTask(task) {
-            _addTask.value = it
+    fun updateTask(task: Task) {
+        _updateTask.value = UIState.Loading
+        repository.updateTask(task) {
+            _updateTask.value = it
+        }
+    }
+
+    fun deleteTask(task: Task) {
+        _deleteTask.value = UIState.Loading
+        repository.deleteTask(task) {
+            _deleteTask.value = it
         }
     }
 }

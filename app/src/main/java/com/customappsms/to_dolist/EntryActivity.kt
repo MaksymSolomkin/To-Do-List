@@ -16,6 +16,10 @@ import dagger.hilt.android.AndroidEntryPoint
 class EntryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEntryBinding
     private val viewModel: AuthViewModel by viewModels()
+    private val defaultErrorMessage: String
+        get() {
+            return getString(R.string.message_somethingWentWrong)
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +34,7 @@ class EntryActivity : AppCompatActivity() {
                 }
                 is UIState.Failure -> {
                     binding.progressBar.hide()
-                    toast(it.error)
+                    toast(it.error ?: defaultErrorMessage)
                 }
                 is UIState.Success -> {
                     binding.progressBar.hide()

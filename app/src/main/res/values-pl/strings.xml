@@ -8,4 +8,11 @@
 
     <!--    Hints-->
     <string name="hint.writeYourTask">Napisz swoje zadanie</string>
+
+    <!--    Messages-->
+    <string name="message.taskCanNotBeEmpty" >Zadanie nie może być puste</string>
+    <string name="message.taskWasSuccessfullyAdded" >Zadanie zostało dodane pomyślnie</string>
+    <string name="message.taskWasSuccessfullyUpdated" >Zadanie zostało zmodyfikowane pomyślnie</string>
+    <string name="message.taskWasSuccessfullyDeleted" >Zadanie zostało usunięte pomyślnie</string>
+    <string name="message.somethingWentWrong" >Przepraszamy, coś poszło nie tak</string>
 </resources>

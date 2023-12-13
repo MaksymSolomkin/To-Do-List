@@ -2,6 +2,7 @@ package com.customappsms.to_dolist.ui.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.customappsms.to_dolist.R
 import com.customappsms.to_dolist.databinding.FragmentTodoListBinding
+import com.customappsms.to_dolist.models.Task
 import com.customappsms.to_dolist.ui.adapters.ToDoListAdapter
 import com.customappsms.to_dolist.utils.UIState
 import com.customappsms.to_dolist.utils.hide
@@ -24,13 +26,17 @@ class ToDoListFragment : Fragment() {
 
     private lateinit var binding: FragmentTodoListBinding
     private val viewModel: TaskViewModel by viewModels()
+    private val defaultErrorMessage: String
+        get() {
+            return getString(R.string.message_somethingWentWrong)
+        }
     private val adapter by lazy {
         ToDoListAdapter(
-            onItemClicked = { pos, item ->
-
+            onItemClicked = { item ->
+                openBottomSheet(item)
             },
-            onDeleteClicked = { pos, item ->
-
+            onDeleteClicked = { item ->
+                viewModel.deleteTask(item)
             },
             onCheckBoxClicked = { pos, item ->
 
@@ -59,8 +65,7 @@ class ToDoListFragment : Fragment() {
         binding.recyclerView.adapter = adapter
 
         binding.addNoteImageView.setOnClickListener {
-            val bottomSheet = TaskDetailsBottomSheetFragment()
-            bottomSheet.show(childFragmentManager, bottomSheet.tag)
+            openBottomSheet()
         }
 
         viewModel.tasks.observe(viewLifecycleOwner) { state ->
@@ -69,17 +74,49 @@ class ToDoListFragment : Fragment() {
                     binding.progressBar.show()
                 }
                 is UIState.Failure -> {
-                    binding.progressBar.hide()
-                    toast(state.error)
+                    showError(state.error ?: defaultErrorMessage)
                 }
                 is UIState.Success -> {
-                    binding.progressBar.hide()
-                    adapter.submitList(state.data)
+                    showSuccess(state.data)
+                }
+            }
+        }
+
+        viewModel.deleteTask.observe(viewLifecycleOwner) { state ->
+            when(state) {
+                is UIState.Loading -> {
+                    binding.progressBar.show()
+                }
+                is UIState.Failure -> {
+                    showError(state.error ?: defaultErrorMessage)
+                }
+                is UIState.Success -> {
+                    viewModel.getTasks()
+                    toast(getString(state.data))
                 }
             }
         }
 
         updateView()
+    }
+
+    private fun openBottomSheet(task: Task? = null) {
+        val bottomSheet = TaskDetailsBottomSheetFragment()
+        bottomSheet.task = task
+        bottomSheet.dismissCallback = {
+            viewModel.getTasks()
+        }
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun showError(error: String) {
+        binding.progressBar.hide()
+        toast(error)
+    }
+
+    private fun showSuccess(data: List<Task>) {
+        binding.progressBar.hide()
+        adapter.submitList(data)
     }
 
     @SuppressLint("SetTextI18n")
@@ -92,6 +129,6 @@ class ToDoListFragment : Fragment() {
             else -> getString(R.string.title_goodEvening)
         }
 
-        binding.welcomeTextView.text = title + getString(R.string.wave_hand).parseAsHtml()
+        binding.welcomeTextView.text = "$title ${getString(R.string.wave_hand).parseAsHtml()}"
     }
 }

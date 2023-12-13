@@ -3,10 +3,16 @@
     <!--    Header-->
     <string name="title.goodMorning">Доброго ранку</string>
     <string name="title.goodAfternoon">Доброго дня</string>
-    <string name="title.goodEvening" >Доброго вечора</string>
-    <string name="title.hello" >Вітаю!</string>
-
+    <string name="title.goodEvening">Доброго вечора</string>
+    <string name="title.hello">Вітаю!</string>
 
     <!--    Hints-->
-    <string name="hint.writeYourTask" >Напиши своє завдання</string>
+    <string name="hint.writeYourTask">Напиши своє завдання</string>
+
+    <!--    Messages-->
+    <string name="message.taskCanNotBeEmpty">Завдання не може бути пустим</string>
+    <string name="message.taskWasSuccessfullyAdded">Завдання успішно додано</string>
+    <string name="message.taskWasSuccessfullyDeleted" >Завдання успішно видалено</string>
+    <string name="message.taskWasSuccessfullyUpdated" >Завдання успішно змінено</string>
+    <string name="message.somethingWentWrong" >Перепрошуємо, щось пішло не так</string>
 </resources>

@@ -10,8 +10,8 @@ import com.customappsms.to_dolist.databinding.ItemTaskLayoutBinding
 import com.customappsms.to_dolist.models.Task
 
 class ToDoListAdapter(
-    private val onDeleteClicked: (Int, Task) -> Unit,
-    private val onItemClicked: (Int, Task) -> Unit,
+    private val onDeleteClicked: (Task) -> Unit,
+    private val onItemClicked: (Task) -> Unit,
     private val onCheckBoxClicked: (Int, Task) -> Unit
 ) : ListAdapter<Task, ToDoListAdapter.ToDoListViewHolder>(TaskDiffCallback) {
 
@@ -29,13 +29,13 @@ class ToDoListAdapter(
         init {
             binding.deleteImageView.setOnClickListener {
                 if (adapterPosition != RecyclerView.NO_POSITION) {
-                    onDeleteClicked.invoke(adapterPosition, getItem(adapterPosition))
+                    onDeleteClicked.invoke(getItem(adapterPosition))
                 }
             }
 
             binding.itemLayout.setOnClickListener {
                 if (adapterPosition != RecyclerView.NO_POSITION) {
-                    onItemClicked.invoke(adapterPosition, getItem(adapterPosition))
+                    onItemClicked.invoke(getItem(adapterPosition))
                 }
             }
 

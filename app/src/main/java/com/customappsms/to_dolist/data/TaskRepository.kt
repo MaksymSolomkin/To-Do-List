@@ -1,5 +1,6 @@
 package com.customappsms.to_dolist.data
 
+import com.customappsms.to_dolist.R
 import com.customappsms.to_dolist.models.Task
 import com.customappsms.to_dolist.utils.FireStoreTables
 import com.customappsms.to_dolist.utils.UIState
@@ -12,7 +13,7 @@ class TaskRepository @Inject constructor(
     private val database: FirebaseFirestore,
     private val firebaseAuth: FirebaseAuth,
 ) {
-    val currentUser: FirebaseUser?
+    private val currentUser: FirebaseUser?
         get ()  = firebaseAuth.currentUser
 
     fun getTasks(result: (UIState<List<Task>>) -> Unit) {
@@ -25,7 +26,6 @@ class TaskRepository @Inject constructor(
                     val task = document.toObject(Task::class.java)
                     tasks.add(task)
                 }
-                println("MAX__ data - ${it.documents}")
 
                 result.invoke(
                     UIState.Success(tasks)
@@ -40,14 +40,39 @@ class TaskRepository @Inject constructor(
             }
     }
 
-    fun addTask(task: Task, result: (UIState<String>) -> Unit) {
-        task.userId = currentUser!!.uid
+    fun updateTask(task: Task, result: (UIState<Int>) -> Unit) {
+        task.userId = currentUser?.uid ?: "unknown"
 
-        database.collection(FireStoreTables.TASKS)
-            .add(task)
+        val isNewTask = task.id.isEmpty()
+        val document = if (isNewTask)
+            database.collection(FireStoreTables.TASKS).document()
+        else
+            database.collection(FireStoreTables.TASKS).document(task.id)
+
+        document.set(task)
             .addOnSuccessListener {
                 result.invoke(
-                    UIState.Success(it.id)
+                    UIState.Success(
+                        if (isNewTask) R.string.message_taskWasSuccessfullyAdded
+                        else R.string.message_taskWasSuccessfullyUpdated
+                    )
+                )
+            }
+            .addOnFailureListener {
+                result.invoke(
+                    UIState.Failure(
+                        it.localizedMessage
+                    )
+                )
+            }
+    }
+
+    fun deleteTask(task: Task, result: (UIState<Int>) -> Unit) {
+        val document = database.collection(FireStoreTables.TASKS).document(task.id)
+        document.delete()
+            .addOnSuccessListener {
+                result.invoke(
+                    UIState.Success(R.string.message_taskWasSuccessfullyDeleted)
                 )
             }
             .addOnFailureListener {
