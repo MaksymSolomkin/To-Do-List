@@ -2,7 +2,7 @@
 
 ## Overview
 
-It is created as a pet project for improving skills and help begginers if they need some example.
+It is created as a pet project to improve skills and help beginners if they need some example.
 This is a simple To-Do List app developed in Kotlin, following the MVVM (Model-View-ViewModel) architecture and using Dagger Hilt for dependency injection. The app also integrates with Firebase for task storage and user authentication.
 
 ## Features
