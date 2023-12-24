@@ -2,19 +2,24 @@
     <string name="app_name" translatable="false">To-Do List</string>
     <string name="wave_hand" translatable="false">&amp;#128075</string>
 
-    <!--    Header-->
+    <!--    Header  -->
     <string name="title.goodMorning">Good morning</string>
     <string name="title.goodAfternoon">Good afternoon</string>
     <string name="title.goodEvening" >Good evening</string>
     <string name="title.hello" >Hello!</string>
 
-    <!--    Hints-->
+    <!--    Hints   -->
     <string name="hint.writeYourTask" >Write your task</string>
 
-    <!--    Messages-->
+    <!--    Messages    -->
     <string name="message.taskCanNotBeEmpty" >Task can not be empty</string>
     <string name="message.taskWasSuccessfullyAdded" >Task was successfully added</string>
     <string name="message.taskWasSuccessfullyDeleted" >Task was successfully deleted</string>
     <string name="message.taskWasSuccessfullyUpdated" >Task was successfully updated</string>
     <string name="message.somethingWentWrong" >Sorry, something went wrong</string>
+
+    <!--    Button Title    -->
+    <string name="button.title.today">Today</string>
+    <string name="button.title.tomorrow">Tomorrow</string>
+    <string name="button.title.yesterday">Yesterday</string>
 </resources>

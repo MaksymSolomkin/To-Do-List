@@ -6,43 +6,77 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.customappsms.to_dolist.R
+import com.customappsms.to_dolist.databinding.ItemHeaderLayoutBinding
 import com.customappsms.to_dolist.databinding.ItemTaskLayoutBinding
 import com.customappsms.to_dolist.models.Task
+
+sealed class ListItem {
+    data class TaskItem(val task: Task) : ListItem()
+    data class HeaderItem(val headerText: String) : ListItem()
+}
 
 class ToDoListAdapter(
     private val onDeleteClicked: (Task) -> Unit,
     private val onItemClicked: (Task) -> Unit,
     private val onCheckBoxClicked: (Int, Task) -> Unit
-) : ListAdapter<Task, ToDoListAdapter.ToDoListViewHolder>(TaskDiffCallback) {
+) : ListAdapter<ListItem, RecyclerView.ViewHolder>(ListDiffCallback) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ToDoListViewHolder {
-        val binding = ItemTaskLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ToDoListViewHolder(binding)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            R.layout.item_task_layout -> {
+                val binding = ItemTaskLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                TaskViewHolder(binding)
+            }
+            R.layout.item_header_layout -> {
+                val headerBinding = ItemHeaderLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                HeaderViewHolder(headerBinding)
+            }
+            else -> throw IllegalArgumentException("Invalid viewType: $viewType")
+        }
     }
 
-    override fun onBindViewHolder(holder: ToDoListViewHolder, position: Int) {
-        val item = getItem(position)
-        holder.bind(item)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (val item = getItem(position)) {
+            is ListItem.TaskItem -> (holder as TaskViewHolder).bind(item.task)
+            is ListItem.HeaderItem -> (holder as HeaderViewHolder).bind(item.headerText)
+        }
     }
 
-    inner class ToDoListViewHolder(private val binding: ItemTaskLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
+    override fun getItemViewType(position: Int): Int {
+        return when (getItem(position)) {
+            is ListItem.TaskItem -> R.layout.item_task_layout
+            is ListItem.HeaderItem -> R.layout.item_header_layout
+        }
+    }
+
+    inner class TaskViewHolder(private val binding: ItemTaskLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
         init {
             binding.deleteImageView.setOnClickListener {
-                if (adapterPosition != RecyclerView.NO_POSITION) {
-                    onDeleteClicked.invoke(getItem(adapterPosition))
+                if (absoluteAdapterPosition != RecyclerView.NO_POSITION) {
+                    when (val listItem = getItem(absoluteAdapterPosition)) {
+                        is ListItem.TaskItem -> onDeleteClicked.invoke(listItem.task)
+                        is ListItem.HeaderItem -> {}
+                    }
                 }
             }
 
             binding.itemLayout.setOnClickListener {
-                if (adapterPosition != RecyclerView.NO_POSITION) {
-                    onItemClicked.invoke(getItem(adapterPosition))
+                if (absoluteAdapterPosition != RecyclerView.NO_POSITION) {
+                    when (val listItem = getItem(absoluteAdapterPosition)) {
+                        is ListItem.TaskItem -> onItemClicked.invoke(listItem.task)
+                        is ListItem.HeaderItem -> {}
+                    }
                 }
             }
 
             binding.checkbox.setOnCheckedChangeListener { _, isSelected ->
                 updateCompletedView(isSelected)
-                if (adapterPosition != RecyclerView.NO_POSITION) {
-                    onCheckBoxClicked.invoke(adapterPosition, getItem(adapterPosition))
+                if (absoluteAdapterPosition != RecyclerView.NO_POSITION) {
+                    when (val listItem = getItem(absoluteAdapterPosition)) {
+                        is ListItem.TaskItem -> onCheckBoxClicked.invoke(absoluteAdapterPosition, listItem.task)
+                        is ListItem.HeaderItem -> {}
+                    }
                 }
             }
         }
@@ -61,14 +95,42 @@ class ToDoListAdapter(
             }
         }
     }
+
+    inner class HeaderViewHolder(private val binding: ItemHeaderLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(headerText: String) {
+            // Binding logic for header items
+        }
+    }
 }
 
-object TaskDiffCallback : DiffUtil.ItemCallback<Task>() {
-    override fun areItemsTheSame(oldItem: Task, newItem: Task): Boolean {
-        return oldItem.id == newItem.id
+object ListDiffCallback : DiffUtil.ItemCallback<ListItem>() {
+    override fun areItemsTheSame(oldItem: ListItem, newItem: ListItem): Boolean {
+        return when {
+            oldItem is ListItem.TaskItem && newItem is ListItem.TaskItem -> {
+                oldItem.task.id == newItem.task.id
+            }
+
+            oldItem is ListItem.HeaderItem && newItem is ListItem.HeaderItem -> {
+                oldItem.headerText == newItem.headerText
+            }
+
+            else -> oldItem == newItem
+        }
     }
 
-    override fun areContentsTheSame(oldItem: Task, newItem: Task): Boolean {
-        return oldItem == newItem
+    override fun areContentsTheSame(oldItem: ListItem, newItem: ListItem): Boolean {
+        return when {
+            oldItem is ListItem.TaskItem && newItem is ListItem.TaskItem -> {
+                oldItem.task.id == newItem.task.id &&
+                        oldItem.task.title == newItem.task.title &&
+                        oldItem.task.isCompleted == newItem.task.isCompleted
+            }
+
+            oldItem is ListItem.HeaderItem && newItem is ListItem.HeaderItem -> {
+                oldItem.headerText == newItem.headerText
+            }
+
+            else -> oldItem == newItem
+        }
     }
 }

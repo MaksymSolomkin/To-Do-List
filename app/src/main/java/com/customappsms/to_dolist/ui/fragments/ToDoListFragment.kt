@@ -2,7 +2,6 @@ package com.customappsms.to_dolist.ui.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +11,7 @@ import androidx.fragment.app.viewModels
 import com.customappsms.to_dolist.R
 import com.customappsms.to_dolist.databinding.FragmentTodoListBinding
 import com.customappsms.to_dolist.models.Task
+import com.customappsms.to_dolist.ui.adapters.ListItem
 import com.customappsms.to_dolist.ui.adapters.ToDoListAdapter
 import com.customappsms.to_dolist.utils.UIState
 import com.customappsms.to_dolist.utils.hide
@@ -116,7 +116,8 @@ class ToDoListFragment : Fragment() {
 
     private fun showSuccess(data: List<Task>) {
         binding.progressBar.hide()
-        adapter.submitList(data)
+        val newData: List<ListItem> = data.map { ListItem.TaskItem(it) }
+        adapter.submitList(newData)
     }
 
     @SuppressLint("SetTextI18n")

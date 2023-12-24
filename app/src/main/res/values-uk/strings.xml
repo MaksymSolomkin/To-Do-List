@@ -15,4 +15,9 @@
     <string name="message.taskWasSuccessfullyDeleted" >Завдання успішно видалено</string>
     <string name="message.taskWasSuccessfullyUpdated" >Завдання успішно змінено</string>
     <string name="message.somethingWentWrong" >Перепрошуємо, щось пішло не так</string>
+
+    <!--    Button Title    -->
+    <string name="button.title.today">Сьогодні</string>
+    <string name="button.title.tomorrow">Завтра</string>
+    <string name="button.title.yesterday">Вчора</string>
 </resources>

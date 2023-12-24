@@ -15,4 +15,9 @@
     <string name="message.taskWasSuccessfullyUpdated" >Zadanie zostało zmodyfikowane pomyślnie</string>
     <string name="message.taskWasSuccessfullyDeleted" >Zadanie zostało usunięte pomyślnie</string>
     <string name="message.somethingWentWrong" >Przepraszamy, coś poszło nie tak</string>
+
+    <!--    Button Title    -->
+    <string name="button.title.today">Dzisiaj</string>
+    <string name="button.title.tomorrow">Jutro</string>
+    <string name="button.title.yesterday">Wczoraj</string>
 </resources>
