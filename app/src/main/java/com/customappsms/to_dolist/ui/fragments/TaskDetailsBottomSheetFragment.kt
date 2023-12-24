@@ -105,7 +105,9 @@ class TaskDetailsBottomSheetFragment : BottomSheetDialogFragment() {
     private fun updateView() {
         task?.let {
             binding.editText.setText(it.title)
-            handleDate(dateFormatter.format(it.date.toDate()))
+
+            selectedDate = it.date.toDate()
+            handleDate(dateFormatter.format(selectedDate!!))
         }
     }
 
